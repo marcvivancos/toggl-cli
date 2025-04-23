@@ -33,6 +33,13 @@ func (timeEntry TimeEntry) AddParam() interface{} {
 	return param
 }
 
+func (timeEntry TimeEntry) ParsedStart() (time.Time, error) {
+	if timeEntry.Start == "" {
+		return time.Time{}, nil
+	}
+	return time.Parse(time.RFC3339, timeEntry.Start)
+}
+
 func (cl *Client) GetCurrentTimeEntry() (TimeEntry, error) {
 	var response TimeEntry
 
@@ -71,16 +78,17 @@ func (cl *Client) PostStartTimeEntry(
 	return response, nil
 }
 
-func (cl *Client) PutStopTimeEntry(workspaceID int, timeEntryID int) error {
+func (cl *Client) PutStopTimeEntry(workspaceID int, timeEntryID int, stopTime time.Time) error {
+	param := make(map[string]interface{})
+	param["stop"] = stopTime.Format(time.RFC3339)
+
 	_, err := cl.do(
-		"PATCH",
-		fmt.Sprintf(
-			"/workspaces/%d/time_entries/%d/stop",
-			workspaceID,
-			timeEntryID,
-		),
-		nil,
+		"PUT",
+		fmt.Sprintf("/workspaces/%d/time_entries/%d", workspaceID, timeEntryID),
+		param,
 	)
 
 	return err
 }
+
+

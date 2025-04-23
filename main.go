@@ -57,7 +57,9 @@ func main() {
 			Name:   "stop",
 			Usage:  "End time entry",
 			Action: cmdApp.CmdStop,
-			Flags:  []cli.Flag{},
+			Flags:  []cli.Flag{
+				endTimeFlag,
+			},
 		},
 		{
 			Name:   "current",
