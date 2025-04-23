@@ -1,8 +1,8 @@
 package command
 
 import (
-	"github.com/sachaos/toggl/cache"
-	toggl "github.com/sachaos/toggl/lib"
+	"github.com/marcvivancos/toggl-cli/cache"
+	toggl "github.com/marcvivancos/toggl-cli/lib"
 	"github.com/urfave/cli"
 )
 

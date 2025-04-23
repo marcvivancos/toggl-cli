@@ -12,7 +12,7 @@ builds:
   goarch:
   - amd64
   ldflags:
-  - -s -w -X github.com/sachaos/toggl.version={{.Version}}
+  - -s -w -X github.com/marcvivancos/toggl-cli.version={{.Version}}
 archives:
 - name_template: >-
     {{- .ProjectName }}_
@@ -31,13 +31,3 @@ changelog:
     exclude:
     - '^docs:'
     - '^test:'
-brews:
-- repository:
-    owner: sachaos
-    name: homebrew-tap
-  directory: Formula
-  homepage: https://github.com/sachaos/toggl
-  description: Toggl CLI client
-  skip_upload: auto
-  test: |
-    system "#{bin}/toggl", "--version"

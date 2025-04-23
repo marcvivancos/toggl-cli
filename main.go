@@ -8,9 +8,9 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/sachaos/toggl/cache"
-	"github.com/sachaos/toggl/command"
-	"github.com/sachaos/toggl/lib"
+	"github.com/marcvivancos/toggl-cli/cache"
+	"github.com/marcvivancos/toggl-cli/command"
+	toggl "github.com/marcvivancos/toggl-cli/lib"
 	"github.com/spf13/viper"
 	"github.com/urfave/cli"
 )
@@ -23,7 +23,6 @@ const (
 	ConfigName = ".toggl"
 	ConfigType = "json"
 )
-
 
 const Name string = "toggl"
 
@@ -40,8 +39,8 @@ func main() {
 	app := cli.NewApp()
 	app.Name = Name
 	app.Version = version
-	app.Author = "sachaos"
-	app.Email = "sakataku7@gmail.com"
+	app.Author = "marcvivancos"
+	app.Email = "me@marcvivancos.com"
 	app.Usage = "Toggl API CLI Client"
 
 	app.Flags = GlobalFlags

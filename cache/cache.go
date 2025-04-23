@@ -5,7 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/sachaos/toggl/lib"
+	"github.com/marcvivancos/toggl-cli/lib"
 )
 
 var c *Cache
