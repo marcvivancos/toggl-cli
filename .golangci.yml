@@ -1,0 +1,17 @@
+linters:
+  enable:
+    - errcheck
+    - gosimple
+    - govet
+    - ineffassign
+    - staticcheck
+    - unused
+    - misspell
+    - gofmt
+    - goimports
+
+issues:
+  exclude-rules:
+
+run:
+  timeout: 5m 

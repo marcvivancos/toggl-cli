@@ -6,12 +6,12 @@ import (
 	"github.com/marcvivancos/toggl-cli/cache"
 	toggl "github.com/marcvivancos/toggl-cli/lib"
 	"github.com/spf13/viper"
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 )
 
 func (app *App) getProjects(c *cli.Context) (projects toggl.Projects, err error) {
 	projects = cache.GetContent().Projects
-	if len(projects) == 0 || !c.GlobalBool("cache") {
+	if len(projects) == 0 || !c.Bool("cache") {
 		projects, err = app.client.FetchWorkspaceProjects(viper.GetInt("wid"))
 		cache.SetProjects(projects)
 		cache.Write()

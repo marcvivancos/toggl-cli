@@ -2,14 +2,16 @@ package main
 
 import (
 	"errors"
+	"fmt"
+	"path/filepath"
 	"strconv"
 
-	"github.com/urfave/cli"
+	cli "github.com/urfave/cli/v2"
 )
 
 func CmdLocal(c *cli.Context) error {
 	if !c.Args().Present() {
-		return errors.New("Command Failed")
+		return errors.New("command failed")
 	}
 	workspaceID, err := strconv.Atoi(c.Args().First())
 	if err != nil {
@@ -22,7 +24,9 @@ func CmdLocal(c *cli.Context) error {
 		projectID = c.Int("project-id")
 	}
 
-	CreateConfig(LocalConfigFilePath(), map[string]int{"wid": workspaceID, "pid": projectID})
+	path := filepath.Join(".", ConfigName+"."+ConfigType)
+	CreateConfig(path, map[string]int{"wid": workspaceID, "pid": projectID})
+	fmt.Printf("Local workspace set to: %d\n", workspaceID)
 
 	return nil
 }

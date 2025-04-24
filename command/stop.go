@@ -6,7 +6,7 @@ import (
 
 	"github.com/marcvivancos/toggl-cli/cache"
 	toggl "github.com/marcvivancos/toggl-cli/lib"
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 )
 
 func (app *App) CmdStop(c *cli.Context) error {
@@ -16,12 +16,9 @@ func (app *App) CmdStop(c *cli.Context) error {
 	}
 
 	stopTime := time.Now()
+
 	if c.IsSet("end-time") {
-		endTime := c.String("end-time")
-		stopTime, err = time.ParseInLocation("2006-01-02T15:04:05", endTime, time.Local)
-		if err != nil {
-			return fmt.Errorf("invalid time format: %v", err)
-		}
+		stopTime = c.Timestamp("end-time").UTC()
 
 		startTime, err := currentTimeEntry.ParsedStart()
 		if err != nil {

@@ -5,7 +5,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"errors"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
 	"path"
@@ -17,7 +17,7 @@ const (
 )
 
 var (
-	retryCountExceeded = errors.New("API request retry count exceeded")
+	errRetryCountExceeded = errors.New("API request retry count exceeded")
 )
 
 type Client struct {
@@ -39,9 +39,18 @@ func NewDefaultClient(token string) *Client {
 	}
 }
 
-func (cl *Client) do(method string, endpoint string, param interface{}) (res *http.Response, err error) {
+func (cl *Client) do(method string, endpoint string, queryParams map[string]string, bodyParams interface{}) (res *http.Response, err error) {
 	uri, _ := url.Parse(baseURI)
 	uri.Path = path.Join(uri.Path, endpoint)
+
+	// Add query parameters to the URL
+	if queryParams != nil {
+		q := uri.Query()
+		for key, value := range queryParams {
+			q.Add(key, value)
+		}
+		uri.RawQuery = q.Encode()
+	}
 
 	req, err := http.NewRequest(method, uri.String(), nil)
 	if err != nil {
@@ -52,13 +61,14 @@ func (cl *Client) do(method string, endpoint string, param interface{}) (res *ht
 	req.Header.Add("Authorization", "Basic "+basic)
 
 	var buff []byte
-	if param != nil {
-		buff, err = json.Marshal(param)
+	if bodyParams != nil {
+		buff, err = json.Marshal(bodyParams)
 		if err != nil {
 			return
 		}
+		req.Body = io.NopCloser(bytes.NewReader(buff))
+		req.Header.Set("Content-Type", "application/json")
 	}
-	req.Body = ioutil.NopCloser(bytes.NewReader(buff))
 
 	count := 0
 	for count < retryCount {
@@ -69,5 +79,5 @@ func (cl *Client) do(method string, endpoint string, param interface{}) (res *ht
 		count++
 	}
 
-	return nil, retryCountExceeded
+	return nil, errRetryCountExceeded
 }

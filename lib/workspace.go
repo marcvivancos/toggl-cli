@@ -44,12 +44,12 @@ func (repository Workspaces) FindByID(id int) (Workspace, error) {
 			return item, nil
 		}
 	}
-	return Workspace{}, errors.New("Find Failed")
+	return Workspace{}, errors.New("find failed")
 }
 
 func (cl *Client) FetchWorkspaces() (Workspaces, error) {
 	var workspaces Workspaces
-	res, err := cl.do("GET", "/workspaces", nil)
+	res, err := cl.do("GET", "/workspaces", nil, nil)
 	if err != nil {
 		return Workspaces{}, err
 	}

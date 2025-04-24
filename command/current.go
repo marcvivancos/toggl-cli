@@ -7,7 +7,7 @@ import (
 
 	"github.com/marcvivancos/toggl-cli/cache"
 	toggl "github.com/marcvivancos/toggl-cli/lib"
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 )
 
 func formatTimeDuration(duration time.Duration) string {
@@ -26,15 +26,21 @@ func (app *App) CmdCurrent(c *cli.Context) error {
 	var project toggl.Project
 	var timeEntry toggl.TimeEntry
 	var workspace toggl.Workspace
-	var err error
 
 	timeEntry = cache.GetContent().CurrentTimeEntry
 
-	if !c.GlobalBool("cache") {
-		timeEntry, err = app.client.GetCurrentTimeEntry()
+	if !c.Bool("cache") {
+		appTimeEntry, err := app.client.GetCurrentTimeEntry()
 		if err != nil {
 			return err
 		}
+		
+		if appTimeEntry == nil {
+			fmt.Println("No time entry")
+			return nil
+		}
+		
+		timeEntry = *appTimeEntry
 		cache.SetCurrentTimeEntry(timeEntry)
 		cache.Write()
 
@@ -43,6 +49,9 @@ func (app *App) CmdCurrent(c *cli.Context) error {
 			return err
 		}
 		workspace, err = workspaces.FindByID(timeEntry.WorkspaceID)
+		if err != nil {
+			return err
+		}
 
 		if timeEntry.ProjectID != 0 {
 			projects, err := app.getProjects(c)

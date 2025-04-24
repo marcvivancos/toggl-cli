@@ -6,12 +6,12 @@ import (
 	"github.com/marcvivancos/toggl-cli/cache"
 	toggl "github.com/marcvivancos/toggl-cli/lib"
 	"github.com/spf13/viper"
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 )
 
 func (app *App) getWorkspaces(c *cli.Context) (workspaces toggl.Workspaces, err error) {
 	workspaces = cache.GetContent().Workspaces
-	if len(workspaces) == 0 || !c.GlobalBool("cache") {
+	if len(workspaces) == 0 || !c.Bool("cache") {
 		workspaces, err = app.client.FetchWorkspaces()
 		cache.SetWorkspaces(workspaces)
 		cache.Write()
