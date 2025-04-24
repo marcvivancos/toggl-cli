@@ -4,12 +4,12 @@ import (
 	"encoding/csv"
 	"os"
 
-	"github.com/sachaos/toggl/util"
-	"github.com/urfave/cli"
+	"github.com/marcvivancos/toggl-cli/util"
+	"github.com/urfave/cli/v2"
 )
 
 func NewWriter(c *cli.Context) (writer util.Writer) {
-	if c.GlobalBool("csv") {
+	if c.Bool("csv") {
 		writer = csv.NewWriter(os.Stdout)
 	} else {
 		writer = util.NewTabWriter(os.Stdout)

@@ -30,7 +30,7 @@ func (repository Projects) FindByID(id int) (Project, error) {
 			return item, nil
 		}
 	}
-	return Project{}, errors.New("Find Failed")
+	return Project{}, errors.New("find failed")
 }
 
 func (cl *Client) FetchWorkspaceProjects(workspaceID int) (Projects, error) {
@@ -39,6 +39,7 @@ func (cl *Client) FetchWorkspaceProjects(workspaceID int) (Projects, error) {
 	res, err := cl.do(
 		"GET",
 		fmt.Sprintf("/workspaces/%d/projects", workspaceID),
+		nil,
 		nil,
 	)
 	if err != nil {

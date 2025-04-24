@@ -2,10 +2,9 @@ package cache
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"os"
 
-	"github.com/sachaos/toggl/lib"
+	toggl "github.com/marcvivancos/toggl-cli/lib"
 )
 
 var c *Cache
@@ -39,7 +38,7 @@ func (c *Cache) Init() error {
 
 func Read() { c.Read() }
 func (c *Cache) Read() error {
-	jsonString, err := ioutil.ReadFile(c.Filename)
+	jsonString, err := os.ReadFile(c.Filename)
 	if err != nil {
 		return err
 	}
@@ -55,7 +54,7 @@ func (c *Cache) Write() error {
 	if err != nil {
 		return err
 	}
-	if err := ioutil.WriteFile(c.Filename, buf, os.ModePerm); err != nil {
+	if err := os.WriteFile(c.Filename, buf, os.ModePerm); err != nil {
 		return err
 	}
 	return nil

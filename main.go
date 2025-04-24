@@ -3,16 +3,15 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
 
-	"github.com/sachaos/toggl/cache"
-	"github.com/sachaos/toggl/command"
-	"github.com/sachaos/toggl/lib"
+	"github.com/marcvivancos/toggl-cli/cache"
+	"github.com/marcvivancos/toggl-cli/command"
+	toggl "github.com/marcvivancos/toggl-cli/lib"
 	"github.com/spf13/viper"
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 )
 
 var (
@@ -24,8 +23,7 @@ const (
 	ConfigType = "json"
 )
 
-
-const Name string = "toggl"
+const Name string = "toggl-cli"
 
 var version string
 
@@ -40,24 +38,32 @@ func main() {
 	app := cli.NewApp()
 	app.Name = Name
 	app.Version = version
-	app.Author = "sachaos"
-	app.Email = "sakataku7@gmail.com"
 	app.Usage = "Toggl API CLI Client"
 
 	app.Flags = GlobalFlags
-	app.Commands = []cli.Command{
+	app.Commands = []*cli.Command{
 		{
 			Name:   "start",
 			Usage:  "Start time entry",
 			Action: cmdApp.CmdStart,
 			Flags: []cli.Flag{
 				projectIDFlag,
+				startTimeFlag,
+				fromPreviousFlag,
 			},
 		},
 		{
 			Name:   "stop",
 			Usage:  "End time entry",
 			Action: cmdApp.CmdStop,
+			Flags: []cli.Flag{
+				endTimeFlag,
+			},
+		},
+		{
+			Name:   "resume",
+			Usage:  "Resume time entry",
+			Action: cmdApp.CmdResume,
 			Flags:  []cli.Flag{},
 		},
 		{
@@ -115,7 +121,7 @@ func requireToken() error {
 		}
 		count++
 	}
-	panic(fmt.Errorf("Invalid token"))
+	panic(fmt.Errorf("invalid token"))
 }
 
 func RootConfigFilePath() string {
@@ -128,9 +134,9 @@ func LocalConfigFilePath() string {
 
 func CreateConfig(path string, hash interface{}) {
 	buf, _ := json.MarshalIndent(hash, "", "  ")
-	err := ioutil.WriteFile(path, buf, os.ModePerm)
+	err := os.WriteFile(path, buf, os.ModePerm)
 	if err != nil {
-		panic(fmt.Errorf("Fatal error config file: %s \n", err))
+		panic(fmt.Errorf("fatal error config file: %s", err))
 	}
 }
 

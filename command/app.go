@@ -1,7 +1,7 @@
 package command
 
 import (
-	"github.com/sachaos/toggl/lib"
+	"github.com/marcvivancos/toggl-cli/lib"
 )
 
 type App struct {
